@@ -7,12 +7,31 @@
 #include "test_framework/timed_executor.h"
 using std::unique_ptr;
 using std::vector;
+using std::make_unique;
+
+void TreeLeavesHelper(const unique_ptr<BinaryTreeNode<int>>& tree, vector<const unique_ptr<BinaryTreeNode<int>>*>& list) {
+  if (!tree) {
+    return;
+  }
+  TreeLeavesHelper(tree->left, list);
+  TreeLeavesHelper(tree->right, list);
+  if (!tree->left && !tree->right) {
+    list.push_back(&tree);
+  }
+}
 
 vector<const unique_ptr<BinaryTreeNode<int>>*> CreateListOfLeaves(
     const unique_ptr<BinaryTreeNode<int>>& tree) {
-  // TODO - you fill in here.
-  return {};
+  vector<const unique_ptr<BinaryTreeNode<int>>*> list;
+  if (!tree) {
+    return list;
+  }
+  TreeLeavesHelper(tree, list);
+  return list;
 }
+
+
+
 vector<int> CreateListOfLeavesWrapper(
     TimedExecutor& executor, const unique_ptr<BinaryTreeNode<int>>& tree) {
   auto result = executor.Run([&] { return CreateListOfLeaves(tree); });

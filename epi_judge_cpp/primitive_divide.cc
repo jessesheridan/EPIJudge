@@ -1,7 +1,18 @@
 #include "test_framework/generic_test.h"
-int Divide(int x, int y) {
-  // TODO - you fill in here.
-  return 0;
+uint32_t Divide(uint32_t a, uint32_t b) {
+  uint32_t power = 32;
+  uint64_t c = b << power;
+  uint64_t multiple = 1 << power;
+  uint32_t result = 0;
+  while (a >= b) {
+    while (c > a) {
+      c >>= 1;
+      multiple >>= 1;
+    }
+    a -= c;
+    result += multiple;
+  }
+  return result;
 }
 
 int main(int argc, char* argv[]) {

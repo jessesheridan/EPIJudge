@@ -1,5 +1,10 @@
+// [0,1,2]
+// 0,1,2       1,0,2       2,1,0
+// 0,1,2 0,2,1 1,0,2 1,2,0 2,1,0 2,0,1
+
 #include <functional>
 #include <vector>
+#include <random>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/random_sequence_checker.h"
@@ -7,8 +12,17 @@
 using std::bind;
 using std::vector;
 vector<int> ComputeRandomPermutation(int n) {
-  // TODO - you fill in here.
-  return {};
+  vector<int> result(n);
+  std::iota(std::begin(result), std::end(result), 0);
+  std::random_device rd;
+  std::default_random_engine seed(rd());
+
+  for(auto i = 0; i < n; ++i) {
+    std::uniform_int_distribution<int> distributor(i,n-1);
+    int rand_index = distributor(seed);
+    std::swap(result[i], result[rand_index]);
+  }
+  return result;
 }
 int Factorial(int n) { return n <= 1 ? 1 : n * Factorial(n - 1); }
 
@@ -57,3 +71,5 @@ int main(int argc, char* argv[]) {
       args, "random_permutation.cc", "random_permutation.tsv",
       &ComputeRandomPermutationWrapper, DefaultComparator{}, param_names);
 }
+
+

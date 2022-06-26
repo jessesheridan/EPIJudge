@@ -4,11 +4,40 @@
 #include "test_framework/test_failure.h"
 #include "test_framework/timed_executor.h"
 
-BinaryTreeNode<int>* Lca(const unique_ptr<BinaryTreeNode<int>>& node0,
-                         const unique_ptr<BinaryTreeNode<int>>& node1) {
-  // TODO - you fill in here.
-  return nullptr;
+#include <memory>
+using std::unique_ptr;
+BinaryTreeNode<int>* Lca(const unique_ptr<BinaryTreeNode<int>>& node0, const unique_ptr<BinaryTreeNode<int>>& node1) {
+  auto temp0 = node0.get();
+  int node0_depth = 0, node1_depth = 0;
+  while (temp0) {
+    temp0 = temp0->parent;
+    node0_depth++;
+  }
+  temp0 = node1.get();
+  while (temp0) {
+    temp0 = temp0->parent;
+    node1_depth++;
+  }
+  temp0 = node0.get();
+  auto temp1 = node1.get();
+  while (node0_depth > node1_depth) {
+    temp0 = temp0->parent;
+    node0_depth--;
+  } 
+  while (node1_depth > node0_depth) {
+    temp1 = temp1->parent;
+    node1_depth--;
+  }
+  
+  while (temp0 != temp1) {
+    temp0 = temp0->parent;
+    temp1 = temp1->parent;
+  }
+
+  return temp0;
 }
+
+
 int LcaWrapper(TimedExecutor& executor,
                const unique_ptr<BinaryTreeNode<int>>& tree, int key0,
                int key1) {

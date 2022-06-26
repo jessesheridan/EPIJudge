@@ -6,17 +6,41 @@
 #include "test_framework/serialization_traits.h"
 #include "test_framework/test_failure.h"
 using std::length_error;
+// d => exception
+// e(1),d,e(2),e(3),d,e(4),d,d
+#include <stack>
+using std::stack;
+// queue based on stacks
 class Queue {
  public:
   void Enqueue(int x) {
-    // TODO - you fill in here.
-    return;
+    _st.push(x);
+    ++_size;
   }
+
   int Dequeue() {
-    // TODO - you fill in here.
-    return 0;
+    if (_qu.empty()) {
+      while (!_st.empty()) {
+        _qu.push(_st.top());
+        _st.pop();
+      }
+    }
+
+    auto temp = _qu.top();
+    _qu.pop();
+    --_size;
+    return temp;
   }
+
+  size_t Size() {
+    return _size;
+  }
+
+ private:
+  stack<int> _st, _qu;
+  size_t _size = 0;
 };
+
 struct QueueOp {
   enum class Operation { kConstruct, kDequeue, kEnqueue } op;
   int argument;

@@ -1,7 +1,18 @@
 #include "test_framework/generic_test.h"
 bool IsPalindromeNumber(int x) {
-  // TODO - you fill in here.
-  return true;
+  if (x < 0) {
+    return false;
+  }
+  int64_t y = 0;
+  int comp = x;
+  while (x) {
+    y *= 10;
+    y += x%10;
+    x /= 10;
+  }
+
+  return comp == y;
+
 }
 
 int main(int argc, char* argv[]) {

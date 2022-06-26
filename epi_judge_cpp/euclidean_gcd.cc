@@ -1,8 +1,17 @@
 #include "test_framework/generic_test.h"
+// 0, 0
 long long Gcd(long long x, long long y) {
-  // TODO - you fill in here.
-  return 0;
+  long long max = std::max(x,y);
+  long long min = std::min(x,y);
+  while (min) {
+    long long r = max % min;
+    max = min;
+    min = r;
+  }
+  return max;
 }
+
+
 
 int main(int argc, char* argv[]) {
   std::vector<std::string> args{argv + 1, argv + argc};

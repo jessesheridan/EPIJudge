@@ -15,10 +15,23 @@ struct BinaryTreeNode {
   explicit BinaryTreeNode(T data) : data(data){};
 };
 
+// null => nothing
+// 1 => nothing
+// 1,2,3 =>
 void ConstructRightSibling(BinaryTreeNode<int>* tree) {
-  // TODO - you fill in here.
-  return;
+  while (tree) {
+    auto iter = tree;
+    while (iter && iter->left) {
+      iter->left->next = iter->right.get();
+      if (iter->next) {
+        iter->right->next = iter->next->left.get();
+      }
+      iter = iter->next;
+    }
+    tree = tree->left.get();
+  }
 }
+
 namespace test_framework {
 template <>
 struct SerializationTrait<unique_ptr<BinaryTreeNode<int>>>

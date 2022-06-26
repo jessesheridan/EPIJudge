@@ -3,11 +3,19 @@
 #include "test_framework/generic_test.h"
 #include "test_framework/timed_executor.h"
 using std::string;
+using std::reverse; using std::begin; using std::end;
+void ReverseWords(string *s) {
+  reverse(begin(*s), end(*s));
 
-void ReverseWords(string* s) {
-  // TODO - you fill in here.
-  return;
+  size_t start = 0, finish;
+  while ((finish = s->find(" ", start)) != string::npos) {
+    reverse(begin(*s) + start, begin(*s) + finish);
+    start = finish + 1;
+  }
+
+  reverse(begin(*s) + start, end(*s));
 }
+
 string ReverseWordsWrapper(TimedExecutor& executor, string s) {
   string s_copy = s;
 

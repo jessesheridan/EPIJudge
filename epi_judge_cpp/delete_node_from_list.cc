@@ -3,10 +3,20 @@
 #include "test_framework/timed_executor.h"
 
 // Assumes node_to_delete is not tail.
+// 1->2->null
+// 2->null
+// 1->2->3->2
+// 1->3->3
+// 1->2->3->4->2
+// 2->3->4->2
+// 2->3->4->2
+// 3->4->3
+// 1->3->4->2
 void DeletionFromList(const shared_ptr<ListNode<int>>& node_to_delete) {
-  // TODO - you fill in here.
-  return;
+  node_to_delete->data = node_to_delete->next->data;
+  node_to_delete->next = node_to_delete->next->next;
 }
+
 shared_ptr<ListNode<int>> DeletionFromListWrapper(
     TimedExecutor& executor, const shared_ptr<ListNode<int>>& head,
     int node_to_delete_idx) {

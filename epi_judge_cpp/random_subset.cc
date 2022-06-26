@@ -10,11 +10,59 @@
 using std::bind;
 using std::iota;
 using std::vector;
-// Returns a random k-sized subset of {0, 1, ..., n - 1}.
+#include <algorithm>
+#include <vector>
+#include <random>
+
+using std::vector; using std::iota; using std::random_device; using std::default_random_engine; using std::uniform_int_distribution; using std::swap; using std::unordered_map;
 vector<int> RandomSubset(int n, int k) {
-  // TODO - you fill in here.
-  return {};
+  vector<int> result;
+  unordered_map<int,int> seen_values;
+  random_device rd;
+  default_random_engine seed(rd());
+  auto i = 0;
+  for (i; i < k; ++i) {
+    uniform_int_distribution<int> distributor(i, n-1);
+    int rand_num = distributor(seed);
+    int right_value, left_value;
+    if (seen_values.find(i) == seen_values.end()) {
+      right_value = i;
+    }
+    else {
+      right_value = seen_values[i];
+    }
+
+    auto existing_it = seen_values.find(rand_num);
+    if (existing_it == seen_values.end()) {
+      left_value = rand_num;
+    }
+    else {
+      left_value = seen_values[rand_num];
+    }
+    
+    seen_values[i] = left_value;
+    if (i != rand_num) {
+      seen_values[rand_num] = right_value;
+    }
+    result.emplace_back(left_value);
+  }
+  return result;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 bool RandomSubsetRunner(TimedExecutor& executor, int n, int k) {
   using namespace test_framework;
   vector<vector<int>> results;

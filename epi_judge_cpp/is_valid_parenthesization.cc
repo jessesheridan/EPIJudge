@@ -2,10 +2,34 @@
 
 #include "test_framework/generic_test.h"
 using std::string;
-bool IsWellFormed(const string& s) {
-  // TODO - you fill in here.
-  return true;
+// [{()}] ->true
+// ""->true
+// [[}] -> false
+// [ -> false
+#include <stack>
+#include <unordered_map>
+using std::stack; using std::unordered_map;
+bool IsWellFormed(const string& str) {
+  stack<char> opens;
+  const unordered_map<char,char> matching = {
+    {'{', '}'},
+    {'[', ']'},
+    {'(', ')'}
+  };
+  for (int i = 0; i < str.size(); ++i) {
+    if (matching.count(str[i])) {
+      opens.emplace(str[i]);
+    }
+    else {
+      if (opens.empty() || matching.at(opens.top()) != str[i]) {
+        return false;
+      }
+      opens.pop();
+    }
+  }
+  return opens.empty();
 }
+
 
 int main(int argc, char* argv[]) {
   std::vector<std::string> args{argv + 1, argv + argc};

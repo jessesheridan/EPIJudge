@@ -1,7 +1,20 @@
 #include "test_framework/generic_test.h"
+#include <cstdint>
+#include <vector>
+using std::vector;
+
 short Parity(unsigned long long x) {
-  // TODO - you fill in here.
-  return 0;
+  auto i = 0;
+  while (x) {
+    if (x & 1) {
+      i++;
+    }
+    x >>= 1;
+  }
+  if (i % 2) {
+    return true; // odd
+  }
+  return false; // even
 }
 
 int main(int argc, char* argv[]) {

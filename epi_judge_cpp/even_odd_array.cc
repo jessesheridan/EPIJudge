@@ -7,9 +7,24 @@
 using std::vector;
 
 void EvenOdd(vector<int>* A_ptr) {
-  // TODO - you fill in here.
+  size_t a = 0;
+  size_t z = A_ptr->size() - 1;
+  while (a < z) {
+    while (a < z && (A_ptr->at(a) & 1) == 0) {
+      a++;
+    }
+    while (a < z && A_ptr->at(z) & 1) {
+      z--;
+    }
+    if (a < z) {
+      A_ptr->at(a) ^= A_ptr->at(z); 
+      A_ptr->at(z) ^= A_ptr->at(a);
+      A_ptr->at(a) ^= A_ptr->at(z);
+    }
+  }
   return;
 }
+
 void EvenOddWrapper(TimedExecutor& executor, vector<int> A) {
   std::multiset<int> before(begin(A), end(A));
 

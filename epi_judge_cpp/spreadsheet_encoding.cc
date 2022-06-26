@@ -3,9 +3,10 @@
 #include "test_framework/generic_test.h"
 using std::string;
 
-int SSDecodeColID(const string& col) {
-  // TODO - you fill in here.
-  return 0;
+int SSDecodeColID(const string &str) {
+  return accumulate(str.begin(), str.end(), 0, [](int running_sum, char c) {
+    return running_sum * 26 + c - 'A' + 1;
+  });
 }
 
 int main(int argc, char* argv[]) {

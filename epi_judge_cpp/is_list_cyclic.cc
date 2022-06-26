@@ -6,10 +6,57 @@
 #include "test_framework/timed_executor.h"
 using std::shared_ptr;
 
-shared_ptr<ListNode<int>> HasCycle(const shared_ptr<ListNode<int>>& head) {
-  // TODO - you fill in here.
-  return nullptr;
+// null -> null
+// 1->null -> null
+// 1->2->3->4->2
+// ^        ^
+#include <unordered_set>
+using std::unordered_set;
+int CountCycleLength(shared_ptr<ListNode<int>> list) {
+  shared_ptr<ListNode<int>> counter = list->next;
+  int cycle_length = 1;
+  while (counter != list) {
+    counter = counter->next;
+    ++cycle_length;
+  }
+  return cycle_length;
 }
+
+shared_ptr<ListNode<int>> FindCycleStart(const shared_ptr<ListNode<int>>& list, int cycle_length) {
+  shared_ptr<ListNode<int>> left = list, right = list;
+  for (auto i = 0; i < cycle_length; ++i) {
+    right = right->next;
+  }
+  while (left != right) {
+    left = left->next;
+    right = right->next;
+  }
+
+  return left;
+}
+
+shared_ptr<ListNode<int>> HasCycle(const shared_ptr<ListNode<int>>& list) {
+  shared_ptr<ListNode<int>> slow = list;
+  shared_ptr<ListNode<int>> fast = list->next;
+  bool update_slow = false;
+  bool found_cycle = false;
+  while (slow && fast) {
+    if (slow == fast) {
+      found_cycle = true;
+      break;
+    }
+    if (update_slow = !update_slow) {
+      slow = slow->next;
+    }
+    fast = fast->next;
+  }
+  if (!found_cycle) {
+    return nullptr;
+  }
+  int cycle_length = CountCycleLength(slow);
+  return FindCycleStart(list, cycle_length);
+}
+
 void HasCycleWrapper(TimedExecutor& executor,
                      const shared_ptr<ListNode<int>>& head, int cycle_idx) {
   int cycle_length = 0;

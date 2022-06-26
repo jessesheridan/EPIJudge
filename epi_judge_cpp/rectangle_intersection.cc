@@ -8,8 +8,36 @@ struct Rect {
 };
 
 Rect IntersectRectangle(const Rect& r1, const Rect& r2) {
-  // TODO - you fill in here.
-  return {0, 0, 0, 0};
+  int x = 0;
+  int y = 0;
+  int width = -1;
+  int height = -1;
+
+  if ((r2.x >= r1.x) && (r2.x <= r1.x + r1.width)) {
+    x = r2.x;
+    width = std::min(r1.width - (r2.x - r1.x), r2.width);
+  }
+  if ((r1.x >= r2.x) && (r1.x <= r2.x + r2.width)) {
+    x = r1.x;
+    width = std::min(r2.width - (r1.x - r2.x), r1.width);
+  }
+
+  if ((r2.y >= r1.y) && (r2.y <= r1.y + r1.height)) {
+    y = r2.y;
+    height = std::min(r1.height - (r2.y - r1.y), r2.height);
+  }
+  if ((r1.y >= r2.y) && (r1.y <= r2.y + r2.height)) {
+    y = r1.y;
+    height = std::min(r2.height - (r1.y - r2.y), r1.height);
+  }
+
+  if (height != -1 && width != -1) {
+    return {x, y, width, height};
+  }
+
+  return {0, 0, -1, -1};
+
+
 }
 bool operator==(const Rect& r1, const Rect& r2) {
   return std::tie(r1.x, r1.y, r1.width, r1.height) ==

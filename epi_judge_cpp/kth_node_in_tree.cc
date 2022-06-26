@@ -16,11 +16,33 @@ struct BinaryTreeNode {
   int size;
 };
 
+// if this node's num nodes equals k then return this one
+// if left nodes > k then recurse down left
+// if left nodes < k then subtract left nodes from k and recurse down right
+
+//      3
+//     / \
+//    1   1
 const BinaryTreeNode<int>* FindKthNodeBinaryTree(
     const unique_ptr<BinaryTreeNode<int>>& tree, int k) {
-  // TODO - you fill in here.
+  const auto* iter = tree.get();
+  while (iter) {
+    auto size = 1;
+    if (iter->left) {
+      size += iter->left->size;
+    }
+    if (size == k) {
+      return iter;
+    } else if (iter->left && iter->left->size >= k) {
+      iter = iter->left.get();
+    } else {
+      k -= size;
+      iter = iter->right.get();
+    }
+  }
   return nullptr;
 }
+
 namespace test_framework {
 template <typename KeyT>
 struct SerializationTrait<std::unique_ptr<BinaryTreeNode<KeyT>>>

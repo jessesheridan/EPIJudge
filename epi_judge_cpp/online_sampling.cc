@@ -2,19 +2,36 @@
 #include <functional>
 #include <iterator>
 #include <vector>
+#include <random>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/random_sequence_checker.h"
 #include "test_framework/timed_executor.h"
-using std::bind;
-using std::sort;
-using std::vector;
+using std::bind; using std::sort; using std::vector; using std::unordered_set; using std::default_random_engine; using std::uniform_int_distribution; using std::random_device;
 // Assumption: there are at least k elements in the stream.
+// k=0, returns empty
+// [2], k=1 -> [2]
+// [2,3,4,5], k=2 ->
 vector<int> OnlineRandomSample(vector<int>::const_iterator stream_begin,
                                const vector<int>::const_iterator stream_end,
                                int k) {
-  // TODO - you fill in here.
-  return {};
+  vector<int> result;
+  for (auto i = 0; i < k; ++i, ++stream_begin) {
+    result.emplace_back(*stream_begin);
+  }
+  int items_processed = k;
+  
+  random_device rng;
+  default_random_engine seed(rng());
+  for(; stream_begin != stream_end; ++stream_begin) {
+    ++items_processed;
+    uniform_int_distribution<> distributor(0, items_processed-1);
+    const int replace_item = distributor(seed);
+    if (replace_item < k) {
+      result[replace_item] = *stream_begin;
+    }
+  }
+  return result;
 }
 bool OnlineRandomSamplingRunner(TimedExecutor& executor, vector<int> stream,
                                 int k) {
@@ -58,3 +75,7 @@ int main(int argc, char* argv[]) {
                          &OnlineRandomSampleWrapper, DefaultComparator{},
                          param_names);
 }
+
+
+
+

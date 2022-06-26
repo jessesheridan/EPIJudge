@@ -5,21 +5,46 @@
 #include "test_framework/test_failure.h"
 using std::length_error;
 
+// e(1),m,d,e(2),m,e(3),m,e(1),m,d,m,d,m => 1,1,2,3
+// 1,2
+// 2,3,1,2,0,1
+// 3,3,2,2,1,1
+// max_queue: min,
+#include <queue>
+using std::queue; using std::numeric_limits;
 class QueueWithMax {
  public:
   void Enqueue(int x) {
-    // TODO - you fill in here.
-    return;
+    _queue.push(x);
+    _max = std::max(_max, x);
   }
+
   int Dequeue() {
-    // TODO - you fill in here.
-    return 0;
+    auto result = _queue.front();
+    _queue.pop();
+    if (result == _max) {
+      queue<int> temp;
+      _max = numeric_limits<int>::min();
+      while (!_queue.empty()) {
+        auto temp_value = _queue.front();
+        temp.push(temp_value);
+        _max = std::max(temp_value, _max);
+        _queue.pop();
+      }
+      _queue = std::move(temp);
+    }
+    return result;
   }
-  int Max() const {
-    // TODO - you fill in here.
-    return 0;
+
+  int Max() {
+    return _max;
   }
+
+ private:
+  queue<int> _queue, _max_queue;
+  int _max = numeric_limits<int>::min();
 };
+
 struct QueueOp {
   enum class Operation { kConstruct, kDequeue, kEnqueue, kMax } op;
   int argument;

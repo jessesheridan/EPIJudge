@@ -10,10 +10,44 @@ using std::array;
 using std::stack;
 using std::vector;
 const int kNumPegs = 3;
-vector<vector<int>> ComputeTowerHanoi(int num_rings) {
-  // TODO - you fill in here.
-  return {};
+// n1 = move to destination <== base case
+// n2 = move both out, recompile back to destination <== base case
+// n3 = n2 for right, n1 to middle, n2 from right to middle <== recurse
+// n4 = n3 for right, n1 to middle, n3 from right to middle
+// n8 = n7 to right, n1 to middle, n7 from right to middle
+// 0 => empty
+// 1 => {{0, 1}}
+// 2 => {{0, 2}, {0, 1}, {2, 1}}
+// 3 => { {0, 1}, {0, 2}, {1, 2}   {0, 1}      {2, 0}, {2, 1}, {0, 1}}
+vector<vector<int>> ComputeTowerHanoiHelper(int num_rings, int src, int dest) {
+  int temp = 0;
+  if (src != 2 && dest != 2) {
+    temp = 2;
+  } else if (src != 1 && dest != 1) {
+    temp = 1;
+  } 
+  if (num_rings < 1) {
+    return {{}};
+  }
+  if (num_rings == 1) {
+    return {{src, dest}};
+  } else if (num_rings == 2) {
+    return {{src, temp}, {src, dest}, {temp, dest}};
+  }
+  vector<vector<int>> left = ComputeTowerHanoiHelper(num_rings - 1, src, temp);
+  vector<vector<int>> middle = ComputeTowerHanoiHelper(1, src, dest);
+  vector<vector<int>> right = ComputeTowerHanoiHelper(num_rings - 1, temp, dest);
+  left.insert(left.end(), middle.begin(), middle.end());
+  left.insert(left.end(), right.begin(), right.end());
+  return left;
 }
+
+vector<vector<int>> ComputeTowerHanoi(int num_rings) {
+  return ComputeTowerHanoiHelper(num_rings, 0, 1);
+}
+
+
+
 void ComputeTowerHanoiWrapper(TimedExecutor& executor, int num_rings) {
   array<stack<int>, kNumPegs> pegs;
   for (int i = num_rings; i >= 1; --i) {
